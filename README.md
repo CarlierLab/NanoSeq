@@ -20,6 +20,8 @@ The analysis of nucleotide sequences from plasmids or PCR products is routinely 
 - Seqtk https://github.com/lh3/seqtk
 - Minimap2 https://github.com/lh3/minimap2
 - Filtlong https://github.com/rrwick/Filtlong
+- Miniasm and Minipolish https://github.com/rrwick/Minipolish for PCR assembly
+- any2fasta to convert miniasm GFA output to fasta
 
 The easiest way to install all software dependencies is to create a dedicated conda environment. 
 
@@ -43,13 +45,25 @@ Install medaka with
 
 Install the rest of the dependencies with
 
-```conda install -c conda-forge -c defaults -c bioconda biopython=1.83 pandas openpyxl seqtk fastqc mash=2.2 filtlong```
+```conda install -c conda-forge -c defaults -c bioconda biopython=1.83 pandas openpyxl seqtk fastqc mash=2.2 filtlong any2fasta minipolish```
 
-Download the NanoSeq scripts
+Finally, download the NanoSeq scripts
 
 ```git clone https://github.com/CarlierLab/NanoSeq.git```
 
+# Usage
 
+# Method
+
+Assembly of ONT sequencing data with Flye or Canu (and many other assemblers) is relatively straightforward for large molecules or genomes. However, small, circular plasmids cause particular issues because because assemblers may artificially extend contig ends. Solutions exist to tackle this issue in the context of genome assembly (e.g. Trycycler https://github.com/rrwick/Trycycler), but they are cumbersome to use for a large number of samples. Other solutions (e.g. OnRAMP https://onramp.boylelab.org/ or the EPI2ME plasmid validation pipeline) require either reference FASTA files or to have prior knowledge of plasmid size. In a typical lab, this is not always known, or desirable if one wants to mix samples from plasmid or linear PCR products in the same library. 
+
+Our solution to small plasmid assembly is to run the assembly using different subsets until circularization is detected. The size of the assembly is checked at each iteration against the calculated plasmid size. First, reads are assembles with Canu (with read correction). Only one contig is selected for analysis. If the sample is not heavily contaminated, this is often not a problem, otherwise the first contig in the output of the assembler is picked.
+
+The *check_concatemer* function detects contigs that are more than 1.9x longer than the estimated molecule size (from reads distribution). Contigs that exceed this threshold are sliced in half and each half is compared to the other using Mash. If the 2 halves are >98% identical, the contig is sliced in half (leaving 20% overhangs to allow for circularization). 
+The *circularize* function attempts to find overlaps of 30bp (allowing 1 mismatch) between the 5’end of the contig and an internal fragment. Upon detection of a match, the downstream sequence (until the contig end) is aligned to a sequence of identical length starting at the beginning of the contig. If both sequences are >95% identical, the contig is considered circular. The contig is considered non-circular if no overlap is detected, if multiple seed matches are detected, or if the full-length overlaps are <95% identical. Sequences are then rotated by 100 bp to improve correction of contig ends during polishing. Upon failure at the circularization step, assembly is repeated with Canu up to 4 times. Beyond that, the assembly step is repeated again with Flye until circularization is attained or the number of attempts exceed 9 times in total. If circularization still fails after 9 attempts, the contig is considered “non circular” and output as such.  
+Final contigs are polished with Medaka. Consensus sequences are generated in FASTA and FASTQ formats, with positions with consensus qualities < Q10 masked. 
+
+PCR (linear) products are identified as such in the metadata file and treated separately. Read data is subset to approximately 50x depth and assembled directly with Canu. We found that Canu is more robust than e.g. Flye for assembly of short linear fragments as it tolerates shorter read overlaps and generate high quality consensus. 
 
 
 
