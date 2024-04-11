@@ -1,13 +1,27 @@
-# written by Aurélien Carlier 2023
+#!/usr/bin/env python3
+"""
+Copyright 2024 Aurelien Carlier (aurelien.carlier@inrae.fr)
+https://github.com/CarlierLab/NanoSeq
+
+This file is part of NanoSeq. NanoSeq is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by the Free Software Foundation,
+either version 3 of the License, or (at your option) any later version. NanoSeq is distributed
+in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+details. You should have received a copy of the GNU General Public License along with NanoSeq.
+If not, see <http://www.gnu.org/licenses/>.
+
+"""
 import argparse
 import subprocess
 import random
 import os
+import pandas as pd
+import numpy as np
+
 from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
-import pandas as pd
-import numpy as np
 
 class Assembly:
     def __init__(self, barcode, name, read_location,output_folder):
@@ -277,15 +291,16 @@ class PCR_Assembly(Assembly):
         Assembly.__init__(self, barcode, name, read_location, output_folder)
     
     def assemble(self,reads):
-        print("Sample is a PCR product... Assembling directly with Canu")
-        # reads is the path to  reads file
-        """Assembling with Canu"""
-        #subprocess.call(f'flye --nano-hq {reads} --threads 18 --out-dir {self.output_folder}/assemblies', shell=True)
-        #assembly_path = f'{self.output_folder}/assemblies/assembly.fasta'
-        subprocess.call(f'canu -p canu useGrid=False corOutCoverage=50 genomeSize=2000\
-                         enableOEA=false -d {self.output_folder}/assemblies -nanopore {reads}', shell=True)
+        print("Sample is a PCR product... Assembling directly with Miniasm and Minipolish")
+        """Assembling with miniasm"""
+        subprocess.call(f'minimap2 -t 8 -x ava-ont {reads} {reads} > {self.output_folder}/overlaps.paf ', shell=True)
+        subprocess.call(f'miniasm -c 2 -e 2 -f {reads} {self.output_folder}/overlaps.paf > {self.output_folder}/assembly.gfa', shell=True)
+        subprocess.call(f'minipolish -t 8 {reads} {self.output_folder}/assembly.gfa > {self.output_folder}/polished.gfa', shell=True)
+        subprocess.call(f'any2fasta {self.output_folder}/polished.gfa > {self.output_folder}/assembly.fasta', shell=True)
+
+
         print("done")
-        assembly_path = f'{self.output_folder}/assemblies/canu.contigs.fasta'
+        assembly_path = f'{self.output_folder}/assembly.fasta'
         if not os.path.exists(assembly_path):
             assembly_path = ""
 
@@ -488,7 +503,7 @@ for subf in folder:
             print(f'Unable to calculate coverage. Using all reads')
 
         filtered_reads = assembly.filter_reads(processed_reads,20000)
-        reads_subset = assembly.subset_reads(filtered_reads,coverage50)
+        reads_subset = assembly.subset_reads(filtered_reads,coverage150)
         contigs = assembly.assemble(reads_subset)
         if contigs != "":
             subprocess.call(f"mkdir {path}/final_assemblies/",shell=True)
