@@ -67,7 +67,7 @@ options:
 ```
 
 Required arguments:
-- A directory containing sequencing reads in FASTQ or BAM formats, structured according to barcode:
+- A directory containing sequencing reads in FASTQ format, structured according to barcode:
 ```
 barcode_pass/
 ├── barcode01
