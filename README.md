@@ -52,6 +52,19 @@ Finally, download the NanoSeq scripts
 ```git clone https://github.com/CarlierLab/NanoSeq.git```
 
 # Usage
+```
+usage: NanoSeq [-h] [-i INPUT] [-x XLS] [-o OUTPUT] [-m MODEL]
+
+options:
+  -h, --help            show this help message and exit
+  -i INPUT, --input INPUT
+                        Input folder of subfolders containing demultiplexed ONT reads
+  -x XLS, --xls XLS     Sample information as Excel spreadsheet
+  -o OUTPUT, --output OUTPUT
+                        Output directory
+  -m MODEL, --model MODEL
+                        medaka model. Default is r1041_e82_400bps_sup_v4.2.0
+```
 
 Required arguments:
 - A directory containing sequencing reads in FASTQ or BAM formats, structured according to barcode:
@@ -73,9 +86,7 @@ barcode_pass/
     └── AQP668_pass_barcode72_6bf36ca6_2d52d78f_0.fastq.gz
 ```
 - An Excel (.xlsx) spreadsheet containing sample information (see example). Mandatory fields include "Plasmid name", "DNA type", "Barcode". "Size (kb)" is a mandatory field but can be left empty.
-- 
-
-- 
+ 
 # Method
 
 Assembly of ONT sequencing data with Flye or Canu (and many other assemblers) is relatively straightforward for large molecules or genomes. However, small, circular plasmids cause particular issues because because assemblers may artificially extend contig ends. Solutions exist to tackle this issue in the context of genome assembly (e.g. Trycycler https://github.com/rrwick/Trycycler), but they are cumbersome to use for a large number of samples. Other solutions (e.g. OnRAMP https://onramp.boylelab.org/ or the EPI2ME plasmid validation pipeline) require either reference FASTA files or to have prior knowledge of plasmid size. In a typical lab, this is not always known, or desirable if one wants to mix samples from plasmid or linear PCR products in the same library. 
