@@ -96,7 +96,7 @@ class Assembly:
             plsmd_size = max_len
             est_cov = np.sum(read_len)/plsmd_size
             out_size = [plsmd_size,est_cov,np.sum(read_len)]
-        print(f"Calculated size is {out_size[0]} and coverage is {int(out_size[1])}x")
+        #print(f"Calculated size is {out_size[0]} and coverage is {int(out_size[1])}x")
         return out_size
     
     def filter_reads(self,processed_reads,max_length):
@@ -296,8 +296,10 @@ class PCR_Assembly(Assembly):
     def assemble(self,reads):
         print("Sample is a PCR product... Assembling directly with Miniasm and Minipolish")
         """Assembling with miniasm"""
-        subprocess.call(f'minimap2 -t 8 -x ava-ont {reads} {reads} > {self.output_folder}/overlaps.paf ', shell=True)
-        subprocess.call(f'miniasm -c 2 -e 2 -f {reads} {self.output_folder}/overlaps.paf > {self.output_folder}/assembly.gfa', shell=True)
+        # Running minimap2 with parameters correspondig to -x ava-ont, except -r500 is substituted for -r2k to allow for short overlaps
+        subprocess.call(f'minimap2 -t 8 -k15 -Xw5 -e0 -m100 -r500 {reads} {reads} > {self.output_folder}/overlaps.paf ', shell=True)
+        # Running miniasm, allowing for 100 bp overlaps and low coverage
+        subprocess.call(f'miniasm -c 2 -e 2 -s 100 -f {reads} {self.output_folder}/overlaps.paf > {self.output_folder}/assembly.gfa', shell=True)
         subprocess.call(f'minipolish -t 8 {reads} {self.output_folder}/assembly.gfa > {self.output_folder}/polished.gfa', shell=True)
         subprocess.call(f'any2fasta {self.output_folder}/polished.gfa > {self.output_folder}/assembly.fasta', shell=True)
 

@@ -39,9 +39,9 @@ subprocess.call(f'mkdir {args.output}/failed_to_circularize',shell=True)
 subprocess.call(f'mkdir {args.output}/PCR_assemblies',shell=True)
 
 
-sample_df = pd.read_excel(args.xls,sheet_name='Feuil1',index_col=None, dtype={'Plasmid name':str, 'DNA type':str, 'Barcode':str})
+sample_df = pd.read_excel(args.xls,index_col=None, dtype={'Sample name':str, 'DNA type':str, 'Barcode':str})
 #dropping unused sample slots
-sample_df = sample_df.dropna(subset=['Barcode','Plasmid name'])
+sample_df = sample_df.dropna(subset=['Barcode','Sample name'])
 #converting barcodes and types to lowercase
 sample_df["Barcode"] = sample_df.Barcode.apply(lambda x: x.lower())
 barcodes = sample_df["Barcode"].values.tolist()
@@ -56,7 +56,7 @@ print(folder)
 for subf in folder:
     #getting corresponding sample info from pandas df, assuming subf corresponds to the assigned barcode
     sub_df = sample_df[sample_df.Barcode == subf]
-    sample_id = sub_df.iloc[0]['Plasmid name']
+    sample_id = sub_df.iloc[0]['Sample name']
     sample_type = sub_df.iloc[0]['DNA type'].lower().replace(' ','')
     sample_length = sub_df.iloc[0]['Size (kb)']*1000
 
@@ -68,8 +68,6 @@ for subf in folder:
             sample_id = subf
         else:
             pass
-
-    print(subf,sample_id,sample_type)
 
     path = f"{args.input}/{subf}"
     print(f'Assembling {sub_df} with ID {sample_id} and type = {sample_type}')
@@ -182,6 +180,7 @@ for subf in folder:
         length,coverage,total = assembly.getLength(processed_reads)
         length = sample_length
         coverage = float(total/int(sample_length))
+        print(f'Size of fragment from metadata is {length} and calculated coverage is {coverage}')
 
         if coverage > 0:
             coverage50 = min(50/coverage,0.99)
@@ -189,7 +188,7 @@ for subf in folder:
         else:
             coverage50 = 0.99
             coverage150 = 0.99
-            print(f'Unable to calculate coverage. Using all reads')
+            print(f'Unable to estimate coverage. Using all reads')
 
         filtered_reads = assembly.filter_reads(processed_reads,20000)
         reads_subset = assembly.subset_reads(filtered_reads,coverage150)
@@ -200,7 +199,7 @@ for subf in folder:
             final_contigs = f"{path}/final_assemblies/{sample_id}.fasta"
             assembly_type = "PCR"
     else:
-        print("Unknown DNA type")
+        print("Unknown DNA type: Not processing.")
         pass
 
     #Polishing final assemblies with Medaka
