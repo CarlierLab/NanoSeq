@@ -86,6 +86,11 @@ barcode_pass/
     └── AQP668_pass_barcode72_6bf36ca6_2d52d78f_0.fastq.gz
 ```
 - An Excel (.xlsx) spreadsheet containing sample information (see example). Mandatory fields include "Plasmid name", "DNA type", "Barcode". "Size (kb)" is a mandatory field but can be left empty.
+
+# Example data
+Sample data is provided as a directory containing .fastq.gz files and a metadata Excel spreadsheet. Launch the analysis on the example data with:
+
+```python NanoSeq -i example_data/data -x sample_sheet_example.xlsx -o assemblies -m r1041_e82_400bps_sup_v4.3.0 ```
  
 # Method
 
