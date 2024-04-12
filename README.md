@@ -90,7 +90,7 @@ barcode_pass/
 # Example data
 Sample data is provided as a directory containing .fastq.gz files and a metadata Excel spreadsheet. Launch the analysis on the example data with:
 
-```python NanoSeq -i example_data/data -x sample_sheet_example.xlsx -o assemblies -m r1041_e82_400bps_sup_v4.3.0 ```
+```python NanoSeq -i NanoSeq/example_data/data -x NanoSeq/sample_sheet_example.xlsx -o assemblies -m r1041_e82_400bps_sup_v4.3.0 ```
  
 # Method
 
