@@ -67,6 +67,7 @@ options:
 ```
 
 Required arguments:
+- An Excel (.xlsx) spreadsheet containing sample information (see example). Mandatory fields include "Sample name", "DNA type", "Barcode". "Size (kb)" is a mandatory field but can be left empty.
 - A directory containing sequencing reads in FASTQ format, structured according to barcode:
 ```
 barcode_pass/
@@ -85,7 +86,6 @@ barcode_pass/
 └── barcode72
     └── AQP668_pass_barcode72_6bf36ca6_2d52d78f_0.fastq.gz
 ```
-- An Excel (.xlsx) spreadsheet containing sample information (see example). Mandatory fields include "Plasmid name", "DNA type", "Barcode". "Size (kb)" is a mandatory field but can be left empty.
 
 # Example data
 Sample data is provided as a directory containing .fastq.gz files and a metadata Excel spreadsheet. Launch the analysis on the example data with:
