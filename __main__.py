@@ -92,7 +92,7 @@ for subf in folders:
 
             try:
                 length_raw,coverage_raw,total = assembly.get_length(processed_reads)
-                print(f'Calculated coverage is {coverage_raw}')
+                print(f'Calculated coverage is {coverage_raw} and predicted length is {length_raw}')
             except IndexError:
                 print('No reads. Moving on to next sample')
                 continue
