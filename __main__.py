@@ -91,7 +91,7 @@ for subf in folders:
                     pass
 
             try:
-                length_raw,coverage_raw,total = assembly.getLength(processed_reads)
+                length_raw,coverage_raw,total = assembly.get_length(processed_reads)
                 print(f'Calculated coverage is {coverage_raw}')
             except IndexError:
                 print('No reads. Moving on to next sample')
@@ -104,7 +104,7 @@ for subf in folders:
             #filtering reads with filtlong"  
             filtered_reads = assembly.filter_reads(processed_reads,max_length)
             #adjusting coverage to filtered reads
-            length,coverage,total = assembly.getLength(filtered_reads)
+            length,coverage,total = assembly.get_length(filtered_reads)
             print(f'Calculated coverage after filtering is {coverage}')
             if coverage > 0:
                 coverage50 = min(50/coverage,0.99)
@@ -192,7 +192,7 @@ for subf in folders:
                     print("QC file already present")
                     pass
 
-            length,coverage,total = assembly.getLength(processed_reads)
+            length,coverage,total = assembly.get_length(processed_reads)
             length = sample_length
             coverage = float(total/int(sample_length))
             print(f'Size of fragment from metadata is {length} and calculated coverage is {coverage}')
