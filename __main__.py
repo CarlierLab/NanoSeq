@@ -220,7 +220,6 @@ for subf in folders:
                     assembly_type = "PCR"
         case _:
             print("Unknown DNA type: Not processing.")
-            pass
 
     #Polishing final assemblies with Medaka
     if final_contigs != "":
@@ -244,6 +243,8 @@ for subf in folders:
                 os.makedirs(f'{args.output}/PCR_assemblies/{subf}',exist_ok = True)
                 shutil.move(consensus, f'{args.output}/PCR_assemblies/{subf}')
                 shutil.move(qualities, f'{args.output}/PCR_assemblies/{subf}')
+            case _:
+                print("Unknown assembly type. Check assembler output.")
     else:
         shutil.move(path, f'{args.output}/failed_to_assemble')
 print("All done!")
