@@ -82,8 +82,13 @@ for subf in folders:
             assembly = Assembly(subf,sample_id,path,path)
             processed_reads = assembly.process_reads()
             QC = assembly.quality_control(processed_reads)
+            
             for report in QC:
-                shutil.move(report,f'{args.output}/read_qualities')
+                try:
+                    shutil.move(report,f'{args.output}/read_qualities')
+                except shutil.Error:
+                    print("QC file already present")
+                    pass
 
             try:
                 length_raw,coverage_raw,total = assembly.getLength(processed_reads)
@@ -181,7 +186,11 @@ for subf in folders:
             processed_reads = assembly.process_reads()
             QC = assembly.quality_control(processed_reads)
             for report in QC:
-                shutil.move(report,f'{args.output}/read_qualities')
+                try:
+                    shutil.move(report,f'{args.output}/read_qualities')
+                except shutil.Error:
+                    print("QC file already present")
+                    pass
 
             length,coverage,total = assembly.getLength(processed_reads)
             length = sample_length
