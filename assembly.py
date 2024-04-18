@@ -232,7 +232,8 @@ class Assembly:
             pass
         consensus_path = f'{self.output_folder}/{self.name}_consensus.fasta'
         qualities_path = f'{self.output_folder}/{self.name}_qualities.fastq'
-
+        print(f"Consensus FASTA saved to {self.output_folder}/{self.name}_consensus.fasta")
+        
         return (consensus_path,qualities_path)
 
     def check_concatemer(self,assembly_path,estimated_size):
