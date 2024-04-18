@@ -244,7 +244,7 @@ class Assembly:
             # checking if contig is a duplicate. This often happens with long read assembly of circular DNA.
             if (1.9*estimated_size < len(contig.seq)):
                 if self.mash_dist(contig.seq[:half],contig.seq[half:]) < 0.02:
-                    print("contig is a duplicate - slicing in 2")
+                    print("contig is a dimer - slicing in 2")
                     new_contig = contig.seq[:int(1.2*estimated_size-1)] #Leaving some overlapping ends to allow circularization
                     new_rec = SeqRecord(new_contig,id="contig_1")
                     # overwriting old assembly with deduplicated contigs 
