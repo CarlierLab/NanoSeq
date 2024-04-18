@@ -47,7 +47,7 @@ class Assembly:
         path_to_html = glob.glob(f'{self.output_folder}/read_quality/*.html')
         return path_to_html
 
-    def getLength(self,reads_file):
+    def get_length(self,reads_file):
         print("getting length of amplicon or plasmid")
         self.reads_file = reads_file
         reads = SeqIO.parse(reads_file,"fastq")
