@@ -231,18 +231,19 @@ for subf in folders:
         mappings = Mapping(subf,consensus,processed_reads, f'{args.output}/BAM_files')
         bam,bai,fai,fasta = mappings.minimap()
 
-        if assembly_type == "circular":
-            os.makedirs(f'{args.output}/circular_assemblies/{subf}',exist_ok = True)
-            shutil.move(consensus, f'{args.output}/circular_assemblies/{subf}')
-            shutil.move(qualities, f'{args.output}/circular_assemblies/{subf}')
-        elif assembly_type == "linear":
-            os.makedirs(f'{args.output}/failed_to_circularize/{subf}',exist_ok = True)
-            shutil.move(consensus, f'{args.output}/failed_to_circularize/{subf}')
-            shutil.move(qualities, f'{args.output}/failed_to_circularize/{subf}')
-        elif assembly_type == "PCR":
-            os.makedirs(f'{args.output}/PCR_assemblies/{subf}',exist_ok = True)
-            shutil.move(consensus, f'{args.output}/PCR_assemblies/{subf}')
-            shutil.move(qualities, f'{args.output}/PCR_assemblies/{subf}')
+        match assembly_type:
+            case "circular":
+                os.makedirs(f'{args.output}/circular_assemblies/{subf}',exist_ok = True)
+                shutil.move(consensus, f'{args.output}/circular_assemblies/{subf}')
+                shutil.move(qualities, f'{args.output}/circular_assemblies/{subf}')
+            case "linear":
+                os.makedirs(f'{args.output}/failed_to_circularize/{subf}',exist_ok = True)
+                shutil.move(consensus, f'{args.output}/failed_to_circularize/{subf}')
+                shutil.move(qualities, f'{args.output}/failed_to_circularize/{subf}')
+            case "PCR":
+                os.makedirs(f'{args.output}/PCR_assemblies/{subf}',exist_ok = True)
+                shutil.move(consensus, f'{args.output}/PCR_assemblies/{subf}')
+                shutil.move(qualities, f'{args.output}/PCR_assemblies/{subf}')
     else:
         shutil.move(path, f'{args.output}/failed_to_assemble')
 print("All done!")
