@@ -104,5 +104,39 @@ Final contigs are polished with Medaka. Consensus sequences are generated in FAS
 
 PCR (linear) products are identified as such in the metadata file and treated separately. Read data is subset to approximately 50x depth and assembled directly with Canu. We found that Canu is more robust than e.g. Flye for assembly of short linear fragments as it tolerates shorter read overlaps and generate high quality consensus. 
 
+# Output
+The output of the pipeline is written to the directory specified by the -o parameter. It is organized in 6 sub-directories as below:
 
+```
+output_dir
+├── BAM_files
+│   ├── barcodeXX_consensus.fai
+│   ├── barcodeXX_consensus.fasta
+│   ├── barcodeXX_consensus_mapping.sorted.bam
+│   ├── barcodeXX_consensus_mapping.sorted.bam.bai
+│   ├── barcodeXY_consensus.fai
+│   ├── barcodeXY_consensus.fasta
+│   ├── barcodeXY_consensus_mapping.sorted.bam
+│   └── barcodeXY_consensus_mapping.sorted.bam.bai
+├── PCR_assemblies
+│   └── barcodeXX
+│       ├── {sample_name}__consensus.fasta
+│       └── {sample_name}_qualities.fastq
+├── circular_assemblies
+│   └── barcodeXY
+│       ├── {sample_name}_consensus.fasta
+│       └── {sample_name}_qualities.fastq
+├── failed_to_assemble
+├── failed_to_circularize
+└── read_qualities
+    ├── barcodeXX_reads_fastqc.html
+    └── barcodeXY_reads_fastqc.html
+```
+
+- The output of FastQC in HTML format for each sample is stored in the `read_qualities` folder
+- Plasmid consensus sequences that completed without failure are written to the `circular_assembly` folder.
+- Plasmid consensus sequences that could not be circularized because unique sequence overlaps could not be detected at contig ends, or because assemblies contained more than one contig are written to `failed_to_circularize`
+- PCR (linear) fragment assemblies are written to `PCR_assemblies`
+- The `BAM_files` folder contains the alignments of all reads for each sample to the consensus sequence (.bam), as well as alignment indices (.bai), consensus sequence in fasta format and index in .fai format. Alignments can be viewed with e.g. the IGV browser.
+- The `failed to assemble`folder is for troubleshooting only. It contains the sample data that failed to generate assemblies.
 
