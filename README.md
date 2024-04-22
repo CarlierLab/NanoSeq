@@ -22,6 +22,7 @@ The analysis of nucleotide sequences from plasmids or PCR products is routinely 
 - Filtlong https://github.com/rrwick/Filtlong
 - Miniasm and Minipolish https://github.com/rrwick/Minipolish for PCR assembly
 - any2fasta to convert miniasm GFA output to fasta
+- Mash: https://github.com/marbl/Mash
 
 The easiest way to install all software dependencies is to create a dedicated conda environment. 
 
@@ -90,7 +91,7 @@ barcode_pass/
 # Example data
 Sample data is provided as a directory containing .fastq.gz files and a metadata Excel spreadsheet. Launch the analysis on the example data with:
 
-```python NanoSeq -i NanoSeq/example_data/data -x NanoSeq/sample_sheet_example.xlsx -o assemblies -m r1041_e82_400bps_sup_v4.3.0 ```
+```python NanoSeq -i NanoSeq/example_data/data -x NanoSeq/example_data/sample_sheet_example.xlsx -o assemblies -m r1041_e82_400bps_sup_v4.3.0 ```
  
 # Method
 
