@@ -64,7 +64,7 @@ options:
   -o OUTPUT, --output OUTPUT
                         Output directory
   -m MODEL, --model MODEL
-                        medaka model. Default is r1041_e82_400bps_sup_v4.2.0
+                        medaka model. Default is r1041_e82_400bps_sup_v4.3.0
 ```
 
 Required arguments:
