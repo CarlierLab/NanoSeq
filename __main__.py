@@ -218,6 +218,10 @@ for subf in folders:
                     final_contigs = f"{path}/final_assemblies/{sample_id}.fasta"
                     shutil.move(contigs, final_contigs)            
                     assembly_type = "PCR"
+                else:
+                    print(f"unable to assemble sample {subf}. Moving on.")
+                    final_contigs = ""
+                    assembly_type = "failed"
         case _:
             print("Unknown DNA type: Not processing.")
 
