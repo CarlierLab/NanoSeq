@@ -163,7 +163,8 @@ class Assembly:
 
         return assembly_path
 
-    def mash_dist(self,seq1,seq2):
+    @staticmethod
+    def mash_dist(seq1,seq2):
     # calculates Mash distance between 2 sequences
         print("Running mash on 2 sequences...")
         os.makedirs("tmp",exist_ok=True)
@@ -174,8 +175,9 @@ class Assembly:
         mash_d = subprocess.check_output(["mash","dist","tmp/contig1","tmp/contig2"]).split(b'\t')[2]
         shutil.rmtree("tmp")
         return float(mash_d)
-    
-    def fastq_masker(self,fastq_loc,threshold):
+
+    @staticmethod
+    def fastq_masker(fastq_loc,threshold):
         # returns a BioPython SeqRecord object
         fastq_in = SeqIO.parse(fastq_loc,"fastq")
         masked_seqs = []
