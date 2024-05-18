@@ -224,6 +224,7 @@ for subf in folders:
                     assembly_type = "failed"
         case _:
             print("Unknown DNA type: Not processing.")
+            final_contigs = ""
 
     #Polishing final assemblies with Medaka
     if final_contigs != "":
