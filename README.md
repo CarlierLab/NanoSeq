@@ -141,3 +141,6 @@ output_dir
 - The `BAM_files` folder contains the alignments of all reads for each sample to the consensus sequence (.bam), as well as alignment indices (.bai), consensus sequence in fasta format and index in .fai format. Alignments can be viewed with e.g. the IGV browser.
 - The `failed to assemble`folder is for troubleshooting only. It contains the sample data that failed to generate assemblies.
 
+# Citation 
+If you found this software useful, please cite:
+Carlier, A., & Moreau, S. (2024). CarlierLab/NanoSeq: NanoSeq v0.1.3 (v0.1.3). Zenodo. https://doi.org/10.5281/zenodo.11366140
