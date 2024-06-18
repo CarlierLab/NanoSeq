@@ -255,7 +255,5 @@ for subf in folders:
         os.makedirs(f'{args.output}/failed_to_assemble/{subf}',exist_ok = True)
         subprocess.run(f'zcat {path}/*.fastq.gz > {args.output}/failed_to_assemble/{subf}/{subf}.fastq', shell=True)
 
-                    
-        #shutil.move(path, f'{args.output}/failed_to_assemble')
 print("All done!")
 
