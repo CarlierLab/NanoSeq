@@ -17,6 +17,7 @@ import os
 import pandas as pd
 import shutil
 import glob
+import subprocess
 
 from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
@@ -251,6 +252,10 @@ for subf in folders:
             case _:
                 print("Unknown assembly type. Check assembler output.")
     else:
-        shutil.move(path, f'{args.output}/failed_to_assemble')
+        os.makedirs(f'{args.output}/failed_to_assemble/{subf}',exist_ok = True)
+        subprocess.run(f'zcat {path}/*.fastq.gz > {args.output}/failed_to_assemble/{subf}/{subf}.fastq', shell=True)
+
+                    
+        #shutil.move(path, f'{args.output}/failed_to_assemble')
 print("All done!")
 
