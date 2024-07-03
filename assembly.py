@@ -315,7 +315,7 @@ class PCR_Assembly(Assembly):
         print("Sample is a PCR product... Assembling directly with Miniasm and Minipolish")
         """Assembling with miniasm"""
         # Running minimap2 with parameters correspondig to -x ava-ont, except -r500 is substituted for -r2k to allow for short overlaps
-        subprocess.run(f'minimap2 -t 8 -k15 -Xw5 -e0 -m100 -r500 {reads} {reads} > {self.output_folder}/overlaps.paf ', shell=True)
+        subprocess.run(f'minimap2 -t 8 -k15 -Xw5 -e0 -m100 -r300 {reads} {reads} > {self.output_folder}/overlaps.paf ', shell=True)
         # Running miniasm, allowing for 100 bp overlaps and low coverage
         subprocess.run(f'miniasm -c 2 -e 2 -s 100 -f {reads} {self.output_folder}/overlaps.paf > {self.output_folder}/assembly.gfa', shell=True)
 
