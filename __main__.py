@@ -49,7 +49,7 @@ sample_df["Barcode"] = sample_df.Barcode.apply(lambda x: x.lower())
 barcodes = sample_df["Barcode"].values.tolist()
 
 sample_df["DNA type"] = sample_df["DNA type"].apply(lambda x: x.lower())
-bad_chars = [';', ':', '!', "*", " ","/",")","("]
+bad_chars = [';', ':', '!', "*", " ","/",")","(","'"]
 
 # Removing subfolders for which there is no corresponding data in the sample sheet
 folders = [i for i in folders if i in barcodes]
