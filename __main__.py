@@ -182,6 +182,59 @@ for subf in folders:
                 else:
                     pass                            
         
+        case "large":
+            assembly = Assembly(subf,sample_id,path,path)
+            processed_reads = assembly.process_reads()
+            QC = assembly.quality_control(processed_reads)
+            max_length = 1000000
+            coverage50 = 0.99
+            coverage150 = 0.99
+            filtered_reads = assembly.filter_reads(processed_reads,max_length)
+            reads_subset = assembly.subset_reads(filtered_reads,coverage50)
+            for report in QC:
+                try:
+                    shutil.move(report,f'{args.output}/read_qualities')
+                except shutil.Error:
+                    print("QC file already present")
+                    pass
+            
+            # Assembling directly using all reads with Flye
+            contigs = assembly.assemble_w_Flye(reads_subset)
+
+            if contigs != "":
+                #Checking if contig is circular from assembly_info.txt
+                with open(f'{path}/assemblies/assembly_info.txt','r') as assembly_info:
+                    data = assembly_info.read()
+                    data = data.split('\n')[1].split('\t')
+                    is_circular = data[3]
+                    contig_length = int(data[1])
+
+                if (is_circular == 'Y') and (contig_length < max_length):
+                    print("contig is predicted circular, stitching and rotating")
+                    contig_checked = assembly.check_concatemer(contigs,contig_length)
+                    circ_seq = SeqRecord(contig_checked,id="%s"%sample_id)
+                    #rotating to the left by 100bp to allow polishing of contig 
+                    circ_seq = circ_seq[100:] + circ_seq[0:100]
+                    os.makedirs(f"{path}/final_assemblies",exist_ok = True)
+                    SeqIO.write(circ_seq,f"{path}/final_assemblies/{sample_id}_circ.fasta","fasta")
+                    final_contigs = f"{path}/final_assemblies/{sample_id}_circ.fasta"
+                    assembly_type = "circular"
+
+                elif (is_circular != 'Y') and (contig_length < max_length):
+                    print("contig is predicted linear")
+                    assembly_type = "linear"
+                    os.makedirs(f"{path}/final_assemblies",exist_ok = True)
+                    final_contigs = f"{path}/final_assemblies/{sample_id}_non_circularized.fasta"
+                    shutil.move(contigs,final_contigs)
+
+
+                else:
+                    print('Unable to assemble large plasmid. Moving on to next sample.')
+                    final_contigs = ""
+                    assembly_type = "failed"
+                    pass
+
+        
         case "pcr":
             assembly = PCR_Assembly(subf,sample_id,path,path)
             processed_reads = assembly.process_reads()
@@ -223,6 +276,8 @@ for subf in folders:
                     print(f"unable to assemble sample {subf}. Moving on.")
                     final_contigs = ""
                     assembly_type = "failed"
+        
+              
         case _:
             print("Unknown DNA type: Not processing.")
             final_contigs = ""
