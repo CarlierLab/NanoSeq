@@ -42,7 +42,12 @@ If Canu is not available system-wide, install with
 
 Install medaka with 
 
-```pip install medaka```
+```pip install medaka==1.12.1```
+
+Download the Medaka models with for example:
+
+```medaka tools download_models --models r1041_e82_400bps_sup_v4.3.0```
+
 
 Install the rest of the dependencies with
 
