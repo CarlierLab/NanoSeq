@@ -3,6 +3,11 @@ NanoSeq is a pipeline used at the LIPME to assemble plasmid and PCR sequences wi
 This pipeline is designed to enable routine sequencing of whole plasmids (<50kb) and PCR products (>1kb) on Nanopore Minion, Flongle or Promethion flow cells. It takes a set of basecalled and demultiplexed sequencing reads data in FASTQ or BAM format
 The pipeline has been tested on data from R9.4 and R10.4 flow cells and performs best with >100x depth per sample, but lower depth is also possible (as low as 30x with the latest flow cells and chemistry). 
 
+**New in version 2**
+- Due to the advances in raw data quality with the ONT SUP models, polishing with medaka is now optional.
+- Assembled plasmid sequences are optionally annotated with common vector features and hits to a custom protein database
+- Interactive plasmid maps are plotted with bokeh
+
 # Motivation
 The analysis of nucleotide sequences from plasmids or PCR products is routinely done in many laboratories as part of workflows designed to validate synthetic constructs or analyze variants. This is traditionally done using Sanger sequencing and capillary electrophoresis, often outsourced to third-party providers to avoid large upfront instrument cost and maintenance. Oxford Nanopore Technology (ONT) sequencers are affordable, require low maintenance and infrastructure. Recent progress in ONT raw read accuracy contribute make ONT sequencing a viable alternative for in-lab routine DNA sequencing, but existing workflows lack flexibility, require DNA extracts of high quality and prior knowledge of sample properties (e.g. size). NanoSeq is designed to enable low- to medium scale sequencing of plasmid and PCR using ONT sample preparation kits and MinION or PromethION sequencers. The workflow generates consensus sequences from circular plasmids smaller than ~50kb and PCR products >0.5 kb. NanoSeq is robust to partial degradation or contamination of sample nucleic acids, uneven coverage and does not require prior knowledge of size or repeats. 
 
@@ -12,7 +17,7 @@ The analysis of nucleotide sequences from plasmids or PCR products is routinely 
 
 # Installation
 ## Software dependencies
-- Python >3.10 with pandas, numpy, openpyxl, biopython >=1.83
+- Python >3.10 with pandas, numpy, openpyxl, biopython >=1.83, bokeh
 - medaka https://github.com/nanoporetech/medaka
 - Canu https://github.com/marbl/canu
 - Flye https://github.com/fenderglass/Flye
@@ -51,7 +56,7 @@ Download the Medaka models with for example:
 
 Install the rest of the dependencies with
 
-```conda install -c conda-forge -c defaults -c bioconda biopython=1.83 pandas openpyxl seqtk fastqc mash=2.2 filtlong any2fasta minipolish miniasm```
+```conda install -c conda-forge -c defaults -c bioconda biopython=1.83 pandas openpyxl seqtk fastqc mash=2.2 filtlong any2fasta minipolish miniasm bokeh```
 
 Finally, download the NanoSeq scripts
 
@@ -59,7 +64,7 @@ Finally, download the NanoSeq scripts
 
 # Usage
 ```
-usage: NanoSeq [-h] [-i INPUT] [-x XLS] [-o OUTPUT] [-m MODEL]
+usage: NanoSeq [-h] [-i INPUT] [-x XLS] [-o OUTPUT] [-m MODEL] [-db FEATURE_FASTA] [--protein-db PROTEIN_FASTA]
 
 options:
   -h, --help            show this help message and exit
@@ -69,11 +74,11 @@ options:
   -o OUTPUT, --output OUTPUT
                         Output directory
   -m MODEL, --model MODEL
-                        medaka model. Default is r1041_e82_400bps_sup_v4.3.0
+                        Optional medaka model. Default is None, i.e. polishing will be skipped.
 ```
 
 Required arguments:
-- An Excel (.xlsx) spreadsheet containing sample information (see example). Mandatory fields include "Sample name", "DNA type", "Barcode". "Size (kb)" is a mandatory field but can be left empty.
+- An Excel (.xlsx) spreadsheet containing sample information (see example). Mandatory fields include "Sample name", "DNA type", "Barcode". "Size (kb)" is a mandatory field but can be left empty. 
 - A directory containing sequencing reads in FASTQ format, structured according to barcode:
 ```
 barcode_pass/
@@ -91,6 +96,11 @@ barcode_pass/
 │   └── AQP668_pass_barcode61_6bf36ca6_2d52d78f_0.fastq.gz
 └── barcode72
     └── AQP668_pass_barcode72_6bf36ca6_2d52d78f_0.fastq.gz
+
+Optional arguments: 
+- A database of plasmid features in nucleotide fasta format. This is used for the annotation of the plasmids. If not given, annotation will be skipped.
+- A database of protein sequences in fasta format, e.g. Swissprot. This is used for the annotation of plasmids.
+
 ```
 
 # Example data
@@ -131,7 +141,8 @@ output_dir
 ├── circular_assemblies
 │   └── barcodeXY
 │       ├── {sample_name}_consensus.fasta
-│       └── {sample_name}_qualities.fastq
+│       ├── {sample_name}_qualities.fastq
+|       └── annotation
 ├── failed_to_assemble
 ├── failed_to_circularize
 └── read_qualities
