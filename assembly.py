@@ -138,7 +138,7 @@ class Assembly:
         if glob.glob(f'{self.output_folder}/assemblies/*') != []:
             shutil.rmtree(f'{self.output_folder}/assemblies')
 
-        subprocess.run(f'flye --nano-hq {reads} --threads 10 --out-dir {self.output_folder}/assemblies', shell=True,stderr=subprocess.DEVNULL)
+        subprocess.run(f'flye --nano-hq {reads} --threads 10 -i 3 --out-dir {self.output_folder}/assemblies', shell=True,stderr=subprocess.DEVNULL)
         print("done")
         assembly_path = f'{self.output_folder}/assemblies/assembly.fasta'
         if not os.path.exists(assembly_path):
