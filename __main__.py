@@ -243,7 +243,7 @@ try:
                     print(f"Iteration number {i}")
                     logger.debug("Barcode %s — assembly iteration %d", subf, i)
 
-                    if i < 5:
+                    if i < 3:
                         reads_subset   = assembly.subset_reads(filtered_reads, coverage50)
                         contigs        = assembly.assemble_w_Canu(reads_subset, length)
                         if contigs:
@@ -258,7 +258,7 @@ try:
                                 success = True
                                 logger.info("Barcode %s — circular assembly succeeded (Canu, iter %d).", subf, i)
 
-                    elif i < 10:
+                    elif i < 6:
                         reads_subset = assembly.subset_reads(filtered_reads, coverage50)
                         contigs      = assembly.assemble_w_Flye(reads_subset)
                         if contigs:
@@ -277,7 +277,7 @@ try:
                                 success = True
                                 logger.info("Barcode %s — circular assembly succeeded (Flye, iter %d).", subf, i)
 
-                    elif i == 10:
+                    elif i == 6:
                         print("Unable to circularize. Running one last Flye assembly")
                         logger.warning("Barcode %s — failed to circularize after 9 iterations; running final Flye.", subf)
                         reads_subset = assembly.subset_reads(filtered_reads, coverage50)
@@ -384,6 +384,12 @@ try:
             case _:
                 print("Unknown DNA type: not processing.")
                 logger.warning("Barcode %s — unknown DNA type '%s'. Skipping.", subf, sample_type)
+                os.makedirs(f"{args.output}/failed_to_assemble/{subf}", exist_ok=True)
+            subprocess.run(
+                f"zcat {path}/*.fastq.gz > {args.output}/failed_to_assemble/{subf}/{subf}.fastq",
+                shell=True,
+            )
+            logger.warning("Barcode %s — moved raw reads to failed_to_assemble/.", subf)
 
         # ── Post-assembly: polish → map → annotate ────────────────────────────
 
