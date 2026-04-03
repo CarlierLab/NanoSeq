@@ -287,7 +287,21 @@ for subf in folders:
                 except shutil.Error:
                     print("QC file already present")
 
-            _, _, total  = assembly.get_length(processed_reads)
+            length, coverage, total  = assembly.get_length(processed_reads)
+            if sample_length != '':
+                length = sample_length
+                coverage = float(total/int(sample_length))
+            else:
+                print('No length given. Guessing from distribution')
+                try:
+                    coverage = float(total/int(length))
+
+                except ZeroDivisionError:
+                    print('Unable to guess sample length. Setting to 1000 bp')
+                    length = 1000
+                    coverage = float(total/int(length))
+            print(f'Size of fragment from metadata is {length} and calculated coverage is {coverage}') 
+          
             coverage     = float(total / int(sample_length))
             coverage150  = min(150 / coverage, 0.99) if coverage > 0 else 0.99
             filtered_reads = assembly.filter_reads(processed_reads, 20_000)
