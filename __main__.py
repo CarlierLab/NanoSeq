@@ -385,11 +385,11 @@ try:
                 print("Unknown DNA type: not processing.")
                 logger.warning("Barcode %s — unknown DNA type '%s'. Skipping.", subf, sample_type)
                 os.makedirs(f"{args.output}/failed_to_assemble/{subf}", exist_ok=True)
-            subprocess.run(
-                f"zcat {path}/*.fastq.gz > {args.output}/failed_to_assemble/{subf}/{subf}.fastq",
-                shell=True,
-            )
-            logger.warning("Barcode %s — moved raw reads to failed_to_assemble/.", subf)
+                subprocess.run(
+                    f"zcat {path}/*.fastq.gz > {args.output}/failed_to_assemble/{subf}/{subf}.fastq",
+                    shell=True,
+                )
+                logger.warning("Barcode %s — moved raw reads to failed_to_assemble/.", subf)
 
         # ── Post-assembly: polish → map → annotate ────────────────────────────
 
