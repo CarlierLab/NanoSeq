@@ -101,6 +101,7 @@ barcode_pass/
 ```
 Optional arguments: 
 -db, A database of plasmid features in nucleotide fasta format. This is used for the annotation of the plasmids. If not given, annotation will be skipped.
+
 --protein-db, A database of protein sequences in fasta format, e.g. Swissprot. This is used for the annotation of plasmids.
 
 # Example data
