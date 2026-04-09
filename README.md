@@ -57,7 +57,7 @@ Download the Medaka models with for example:
 
 Install the rest of the dependencies with
 
-```conda install -c conda-forge -c defaults -c bioconda biopython=1.83 pandas openpyxl seqtk fastqc mash=2.2 filtlong any2fasta minipolish miniasm bokeh```
+```conda install -c conda-forge -c defaults -c bioconda biopython=1.83 pandas openpyxl seqtk fastqc mash=2.2 filtlong any2fasta minipolish miniasm bokeh blast```
 
 Finally, download the NanoSeq scripts
 
