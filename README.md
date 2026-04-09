@@ -76,6 +76,11 @@ options:
                         Output directory
   -m MODEL, --model MODEL
                         Optional medaka model. Default is None, i.e. polishing will be skipped.
+  -db FEATURE_FASTA
+                        A database of plasmid features in nucleotide fasta format. This is used for the annotation of the plasmids. If not given, annotation will be skipped.
+  --protein-db PROETIN_FASTA
+                        A database of protein sequences in fasta format, e.g. Swissprot. This is used for the annotation of plasmids.
+                        
 ```
 
 Required arguments:
@@ -99,10 +104,6 @@ barcode_pass/
     └── AQP668_pass_barcode72_6bf36ca6_2d52d78f_0.fastq.gz
 
 ```
-Optional arguments: 
--db, A database of plasmid features in nucleotide fasta format. This is used for the annotation of the plasmids. If not given, annotation will be skipped.
-
---protein-db, A database of protein sequences in fasta format, e.g. Swissprot. This is used for the annotation of plasmids.
 
 # Example data
 Sample data is provided as a directory containing .fastq.gz files and a metadata Excel spreadsheet. Launch the analysis on the example data with:
