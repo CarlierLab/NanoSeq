@@ -103,7 +103,7 @@ class Assembly:
         return out_size
     
     def filter_reads(self,processed_reads,max_length):
-        min_length = 500
+        min_length = 300
         path_to_filtered = f'{self.output_folder}/{self.barcode}_filt.fastq'
         print("filtering reads with filtong")
         print(f'minimum size is {min_length} and maximum allowed length is {max_length}')
